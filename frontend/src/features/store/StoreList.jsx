@@ -91,47 +91,44 @@ const StoreList = ({ local, foodCategory, theme, sort }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  if (error)
+    return (
+      <ErrorContainer error={error} onRetry={() => window.location.reload()} />
+    );
+  if (!loading && storeList.length === 0)
+    return <ErrorContainer error="등록된 가게가 존재하지 않습니다." />;
+
   return (
     <>
-      {error && (
-        <ErrorContainer
-          error={error}
-          onRetry={() => window.location.reload()}
-        />
-      )}
-      {!error && !loading && storeList.length === 0 ? (
-        <ErrorContainer error="등록된 가게가 존재하지 않습니다." />
-      ) : (
-        <div className={styles.storeListContainer}>
-          {storeList.map((store) => (
-            <div key={store.id} className={styles.storeCard}>
-              <Link to={`/store/${store.id}`}>
-                <img
-                  className={styles.storeImage}
-                  src={`${store.image}`}
-                  alt={`${store.name} 이미지`}
-                />
-                <div className={styles.storeInfo}>
-                  <span className={styles.storeName}>{store.name}</span>
-                  <span className={styles.storeLocal}>{store.local}</span>
-                </div>
-                <div className={styles.storeStats}>
-                  <span className={styles.storeMeta}>
-                    <IoEyeOutline />
-                    &nbsp;{store.views}
-                    &nbsp;&nbsp;
-                    <FaHeart />
-                    &nbsp;500
-                  </span>
-                  <span>
-                    <FaStar /> 5.0
-                  </span>
-                </div>
-              </Link>
-            </div>
-          ))}
-        </div>
-      )}
+      <div className={styles.storeListContainer}>
+        {storeList.map((store) => (
+          <div key={store.id} className={styles.storeCard}>
+            <Link to={`/store/${store.id}`}>
+              <img
+                className={styles.storeImage}
+                src={`${store.image}`}
+                alt={`${store.name} 이미지`}
+              />
+              <div className={styles.storeInfo}>
+                <span className={styles.storeName}>{store.name}</span>
+                <span className={styles.storeLocal}>{store.local}</span>
+              </div>
+              <div className={styles.storeStats}>
+                <span className={styles.storeMeta}>
+                  <IoEyeOutline />
+                  &nbsp;{store.views}
+                  &nbsp;&nbsp;
+                  <FaHeart />
+                  &nbsp;500
+                </span>
+                <span>
+                  <FaStar /> 5.0
+                </span>
+              </div>
+            </Link>
+          </div>
+        ))}
+      </div>
       {loading && <LoadingContainer />}
     </>
   );
