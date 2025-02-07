@@ -34,6 +34,9 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
 
         List<Store> result = queryFactory
                 .selectFrom(store)
+                .leftJoin(store.local).fetchJoin()
+                .leftJoin(store.foodCategory).fetchJoin()
+                .leftJoin(store.theme).fetchJoin()
                 .where(whereClause)
                 .orderBy(pageable.getSort().isSorted() ? store.views.desc() : store.views.asc())
                 .offset(pageable.getOffset())
