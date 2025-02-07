@@ -2,7 +2,7 @@
 .mypage {
   display: flex;
   min-height: 100vh; /* 전체 화면 높이 */
-  background-color: #f8f9fa; /* 배경색 */
+  padding: 20px;
 }
 
 /* 사이드바 스타일 */

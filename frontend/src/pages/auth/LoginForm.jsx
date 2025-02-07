@@ -16,27 +16,24 @@ const LoginForm = () => {
   const closePwdModal = () => setPwdModalOpen(false); // 비밀번호 찾기 모달 닫기
   return (
     <Container>
-      <a>
-        <Link to="/">
-          <img
-            src={images.nyaminyami}
-            alt="냐미냐미 로고, 홈으로 돌아가기"
-            className={styles.logo}
-          />
-        </Link>
-      </a>
+      <Link to="/">
+        <img
+          src={images.nyaminyami}
+          alt="냐미냐미 로고, 홈으로 돌아가기"
+          className={styles.logo}
+        />
+      </Link>
       <form>
         <div className={styles.inputContainer}>
           <InputField type="text" name="id" placeholder="아이디" />
-          <InputField type="password" name="password" placeholder="비밀번호" />
+          <InputField
+            type="password"
+            name="password"
+            placeholder="비밀번호"
+            customStyles={{ 'margin-bottom': '30px' }}
+          />
           <Button
             type="submit"
-            disabled={false}
-            customStyles={{
-              width: '10.5rem',
-              height: '1.5rem',
-              fontSize: '0.6rem',
-            }}
             onClick={(e) => {
               e.preventDefault();
               localStorage.setItem(
@@ -51,32 +48,32 @@ const LoginForm = () => {
           </Button>
         </div>
       </form>
-      {
-        <>
-          <div className={styles.socialContainer}>
-            <a>
-              <img src={images.kakaoButton} alt="카카오" />
-            </a>
-            <a>
-              <img src={images.googleButton} alt="구글" />
-            </a>
-            <a>
-              <img src={images.naverButton} alt="네이버" />
-            </a>
-          </div>
-          <div className={styles.joinContainer}>
-            <div>
-              <Link to="/signup">회원가입</Link>
-            </div>
-          </div>
-          <div className={styles.findInfoContainer}>
-            {/* 정보 찾기 Modal 컴포넌트*/}
-            <FindId isOpen={isIdModalOpen} onClose={closeIdModal} />
 
-            <FindPwd isOpen={isPwdModalOpen} onClose={closePwdModal} />
-          </div>
-        </>
-      }
+      <div className={styles.socialContainer}>
+        <Link>
+          <img src={images.kakaoButton} alt="카카오" />
+        </Link>
+        <Link>
+          <img src={images.googleButton} alt="구글" />
+        </Link>
+        <Link>
+          <img src={images.naverButton} alt="네이버" />
+        </Link>
+      </div>
+      <div className={styles.joinWrapper}>
+        <p>
+          아직 회원이 아니신가요?
+          <Link to="/signup" className={styles.joinLink}>
+            회원가입
+          </Link>
+        </p>
+      </div>
+      <div className={styles.findInfoContainer}>
+        {/* 정보 찾기 Modal 컴포넌트*/}
+        <FindId isOpen={isIdModalOpen} onClose={closeIdModal} />
+
+        <FindPwd isOpen={isPwdModalOpen} onClose={closePwdModal} />
+      </div>
     </Container>
   );
 };

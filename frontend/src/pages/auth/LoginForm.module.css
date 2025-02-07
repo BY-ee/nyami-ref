@@ -1,26 +1,21 @@
 /*margin: top right bottom left;*/
 .logo {
-  width: 8em;
-  height: 2.2em;
-  cursor: pointer;
-
-  position: absolute; /* 부모기준 - 상대 */
-  top: 20%;
-  left: 50%; /* 부모의 수평 중심 */
-  transform: translateX(-50%); /* 수평 중심에서 자신의 절반만큼 왼쪽으로 이동 */
+  width: 170px;
+  margin-top: 50px;
 }
 
 .inputContainer {
-  position: absolute; /* 부모기준 - 상대 */
-  top: 35%;
-  left: 50%; /* 부모의 수평 중심 */
-  transform: translateX(-50%); /* 수평 중심에서 자신의 절반만큼 왼쪽으로 이동 */
+  width: 250px;
+  margin-top: 30px;
 }
 
 /*     > * : inputContainer의 직계 자식 요소들을 모두 선택*/
 /*     > * : inputContainer의 마지막 요소에 대해서 설정 */
 .inputContainer > * {
-  margin-bottom: 3px; /* 원하는 margin 값 */
+  width: 100%;
+  height: 30px;
+  font-size: 13px;
+  margin-bottom: 10px;
 }
 
 .inputContainer > *:last-child {
@@ -30,41 +25,37 @@
 /* 간편 로그인 아이콘 */
 .socialContainer {
   display: flex;
-  color: #385185;
-  position: absolute; /* 부모기준 - 상대 */
-  top: 60%;
-  left: 50%; /* 부모의 수평 중심 */
-  transform: translateX(-50%); /* 수평 중심에서 자신의 절반만큼 왼쪽으로 이동 */
+  gap: 30px;
+  margin-top: 20px;
 }
-.socialContainer img {
-  width: 1.8rem;
-  height: 1.8rem;
-  cursor: pointer;
-  margin: 0 0.7rem;
-}
-.joinContainer {
-  position: absolute;
-  top: 74%;
-  left: 50%; /* 부모의 수평 중심 */
-  transform: translateX(-50%); /* 수평 중심에서 자신의 절반만큼 왼쪽으로 이동 */
-  font-size: 0.6rem;
-  color: #706f6f;
-  text-align: center;
-  cursor: pointer;
 
-  margin-bottom: 0.3rem;
+.socialContainer img {
+  width: 40px;
+  height: 40px;
 }
+
+.joinWrapper {
+  font-size: 14px;
+  margin-top: 30px;
+}
+
+.joinWrapper p {
+  display: flex;
+  gap: 10px;
+}
+
+.joinLink {
+  color: #706f6f;
+}
+
 .findInfoContainer {
   display: flex; /* Flexbox 활성화 */
   justify-content: center; /* 중앙 정렬 */
   align-items: center; /* 세로 중앙 정렬 */
-  position: absolute;
-  top: 80%;
-  left: 50%; /* 부모의 수평 중심 */
-  transform: translateX(-50%); /* 수평 중심에서 자신의 절반만큼 왼쪽으로 이동 */
-  font-size: 0.6rem;
+  gap: 20px; /* 간격 설정 */
+  margin-top: 20px;
+  font-size: 14px;
   color: #706f6f;
   text-align: center;
   cursor: pointer;
-  gap: 1rem; /* 간격 설정 */
 }

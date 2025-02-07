@@ -13,7 +13,6 @@ import styles from './Button.module.css';
 const Button = ({
   children,
   onClick,
-  size = 'medium',
   disabled = false,
   customStyles = {},
   ...props
