@@ -1,14 +1,56 @@
-import { useState } from 'react';
-import styles from './StoreDetail.module.css';
-import { FaRegHeart, FaHeart } from 'react-icons/fa';
+import { useEffect, useState } from 'react';
+import { FaHeart, FaRegHeart } from 'react-icons/fa';
+import { IoIosArrowForward } from 'react-icons/io';
 import { PiShareBold } from 'react-icons/pi';
+import { useParams } from 'react-router-dom';
 import Slider from 'react-slick';
+import ErrorContainer from '../../components/container/ErrorContainer';
+import LoadingContainer from '../../components/container/LoadingContainer';
+import useFetch from '../../hooks/useFetch';
+import styles from './StoreDetail.module.css';
+import { IoEyeOutline } from 'react-icons/io5';
 
 const StoreDetail = () => {
   const [isLiked, setIsLiked] = useState(false); // 좋아요 상태
+  const [likeCount, setLikeCount] = useState(500); // 좋아요 개수
+  const { storeId } = useParams(); // url의 id 값 저장
+  const {
+    data: store,
+    loading,
+    error,
+    refetch,
+  } = useFetch(`/api/stores/${storeId}`);
+
+  console.warn(store);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      increaseViewCount(storeId);
+    }, 3000); // 3초 후 조회수 증가
+
+    return () => clearTimeout(timer);
+  }, [storeId]);
+
+  // 조회수 증가 API
+  function increaseViewCount(storeId) {
+    fetch(`http://localhost:8090/api/stores/${storeId}/view`, {
+      method: 'PATCH',
+    })
+      .then(() => {
+        console.log('조회수 증가 성공');
+      })
+      .catch(() => {
+        console.error('조회수 증가 실패');
+      });
+  }
 
   // 좋아요 상태를 업데이트하는 함수
   function updateLikeState() {
+    if (isLiked) {
+      setLikeCount((prev) => prev - 1);
+    } else {
+      setLikeCount((prev) => prev + 1);
+    }
     setIsLiked((prev) => !prev);
   }
 
@@ -39,61 +81,36 @@ const StoreDetail = () => {
       imageUrl:
         'https://react-slick.neostack.com/img/react-slick/abstract02.jpg',
     },
-    {
-      id: 3,
-      imageUrl:
-        'https://react-slick.neostack.com/img/react-slick/abstract03.jpg',
-    },
-    {
-      id: 4,
-      imageUrl:
-        'https://react-slick.neostack.com/img/react-slick/abstract04.jpg',
-    },
   ];
 
-  // 메뉴 이미지 배열
-  const menuImageList = [
-    {
-      id: 1,
-      imageUrl:
-        'https://blog.kakaocdn.net/dn/cICerT/btsII0BWx1X/dvYrTQKNdnKKuXcGWjcDK1/img.png',
-    },
-    {
-      id: 2,
-      imageUrl: 'https://img.siksinhot.com/article/1731376728963013.jpeg',
-    },
-    {
-      id: 3,
-      imageUrl: 'https://img.siksinhot.com/article/1731376729504014.jpeg',
-    },
-    {
-      id: 4,
-      imageUrl: 'https://img.siksinhot.com/article/1731376729983015.jpeg',
-    },
-    {
-      id: 5,
-      imageUrl: 'https://img.siksinhot.com/article/1731376730473016.jpeg',
-    },
-    {
-      id: 6,
-      imageUrl: 'https://img.siksinhot.com/article/1731376730891017.jpeg',
-    },
-  ];
+  if (loading) return <LoadingContainer />;
+  if (error) return <ErrorContainer error={error} onRetry={refetch} />;
+  if (!store) return <ErrorContainer error="해당 가게가 존재하지 않습니다." />;
 
   return (
     <>
       {/* breadcrumb */}
       <div className={styles.breadcrumb}>
-        <span>일식</span>
-        <span> &gt; </span>
-        <span>보길</span>
+        <span>{store.local}</span>
+        <span>
+          <IoIosArrowForward />
+        </span>
+        <span>{store.foodCategory}</span>
+        <span>
+          <IoIosArrowForward />
+        </span>
+        <span>{store.theme}</span>
+        <span>
+          <IoIosArrowForward />
+        </span>
+        <span>{store.name}</span>
       </div>
 
       {/* 가게 컨테이너 */}
       <div className={styles.storeContainer}>
         {/* 가게 제목 섹션 */}
         <div className={styles.titleWrapper}>
-          <h2 className={styles.title}>보길</h2>
+          <h2 className={styles.title}>{store.name}</h2>
           <div className={styles.action}>
             <div className={styles.likeBtn} onClick={updateLikeState}>
               {isLiked ? (
@@ -107,79 +124,70 @@ const StoreDetail = () => {
             </div>
           </div>
         </div>
+        <div className={styles.storeStats}>
+          <span className={styles.storeMeta}>
+            <IoEyeOutline />
+            &nbsp;{store.views}
+            &nbsp;&nbsp;
+            <FaHeart />
+            &nbsp;{likeCount}
+          </span>
+        </div>
 
         {/* 가게 사진 슬라이더 */}
         <div className={styles.imageSliderWrapper}>
-          {storeImageList && storeImageList.length > 0 && (
-            <Slider {...storeSettings}>
-              <h3>가게 사진 슬라이더</h3>
-              {storeImageList.map((storeImage) => (
-                <div key={storeImage.id} className={styles.storeImage}>
-                  <img
-                    src={storeImage.imageUrl}
-                    alt={`가게 사진 ${storeImage.id}`}
-                  />
-                </div>
-              ))}
-            </Slider>
-          )}
+          <Slider {...storeSettings}>
+            <div className={styles.storeImage}>
+              <img src={store.image} alt={`가게 사진`} />
+            </div>
+            {storeImageList.map((storeImage) => (
+              <div key={storeImage.id} className={styles.storeImage}>
+                <img
+                  src={storeImage.imageUrl}
+                  alt={`가게 사진 ${storeImage.id}`}
+                />
+              </div>
+            ))}
+          </Slider>
         </div>
 
         <div className={styles.line}></div>
 
         {/* 가게 상세 파트 */}
-        <div className={styles.descriptionWrapper}>
-          <p>
-            <strong>🏠 주소:</strong> 서울특별시 송파구 오금로16길 10-8, 1층
-            보길
-          </p>
-          <div>
-            <p>
-              <strong>📞 Tel:</strong> 010-0101-1010
-            </p>
-            <p>
-              <strong>⏰ 영업시간:</strong> 미정
+        <div className={styles.infoWrapper}>
+          <div className={styles.info}>
+            <div className={styles.infoTitle}>주소</div>
+            <p className={styles.infoContent}>
+              {store.address}, {store.detailAddress}
             </p>
           </div>
-          <p className={styles.description}>
-            aespa, ‘Supernova’로 선사할 다중우주 세계관+폭발적 ‘쇠맛 매력’!
-            히트메이커 KENZIE 참여로 완성도 UP! 첫 정규 ‘Armageddon’으로 이어질
-            대서사의 시작! ‘글로벌 히트메이커’ aespa가 더블 타이틀 곡
-            ‘Supernova’로 폭발적인 에너지를 선사한다. 오는 27일 베일을 벗는 정규
-            앨범 ‘Armageddon’ 발매에 앞서 공개되는 ‘Supernova’는 이번 앨범의
-            더블 타이틀 곡 중 하나로 히트메이커 KENZIE가 작사, 작곡에
-            참여했으며, 무게감 있는 킥과 베이스 기반의 미니멀한 트랙 사운드가
-            인상적인 댄스곡으로, 캐치한 탑라인과 신스 멜로디가 매력적이다. 또한
-            가사에는 다른 차원의 문이 열리는 사건의 시작을 초신성에 빗대어 aespa
-            세계관 시즌 2의 본격적인 스토리텔링을 예고, 내 안의 대폭발이
-            시작되었음을 힙한 무드로 표현해 aespa 특유의 ‘쇠맛’ 매력을
-            만끽하기에 충분하다. 5월 27일 발매되는 aespa 첫 정규 앨범
-            ‘Armageddon’은 더블 타이틀 곡 ‘Armageddon’과 ‘Supernova’를 비롯한
-            다양한 장르의 총 10곡으로 구성되어 있으며, 리얼 월드와 디지털 세계를
-            넘어 다중 우주로 확장되는 aespa 세계관 시즌 2의 서사까지 담아, 한층
-            깊어진 aespa의 음악 세계와 독보적인 콘셉트를 만날 수 있다.
-          </p>
+          <div className={styles.info}>
+            <div className={styles.infoTitle}>전화번호</div>
+            <p className={styles.infoContent}>{store.tel || '-'}</p>
+          </div>
+          <div className={styles.info}>
+            <div className={styles.infoTitle}>영업시간</div>
+            <p className={styles.infoContent}>미정</p>
+          </div>
+          <p className={styles.description}>{store.description}</p>
         </div>
 
         {/* 메뉴 사진 슬라이더 */}
-        <div className={styles.imageSliderWrapper}>
-          {menuImageList && menuImageList.length > 0 && (
+        {store.menus.length > 0 && (
+          <div className={styles.imageSliderWrapper}>
             <Slider {...menuSettings}>
-              <h3>
-                <strong>메뉴 사진 슬라이더</strong>
-              </h3>
-              {menuImageList.map((menuImage) => (
-                <div key={menuImage.id}>
+              {store.menus.map((menu) => (
+                <div key={menu.id}>
                   <img
-                    src={menuImage.imageUrl}
+                    src={menu.image}
                     className={styles.menuImage}
-                    alt={`메뉴 ${menuImage.id}`}
+                    alt={`메뉴 ${menu.id}`}
                   />
                 </div>
               ))}
             </Slider>
-          )}
-        </div>
+          </div>
+        )}
 
         <div className={styles.line}></div>
 

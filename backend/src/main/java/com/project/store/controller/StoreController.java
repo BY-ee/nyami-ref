@@ -15,10 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Slf4j
@@ -94,5 +91,15 @@ public class StoreController {
         return storeService.findStoreById(storeId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @Operation(
+            summary = "가게 조회수 증가",
+            description = "가게 id를 입력하여 해당하는 가게의 조회수를 증가시킵니다."
+    )
+    @PatchMapping("/stores/{storeId}/view")
+    public ResponseEntity<Void> increaseViewCount(@PathVariable int storeId) {
+        storeService.increaseViewCount(storeId);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -12,7 +12,9 @@
 .breadcrumb {
   margin-top: 15px;
   margin-left: 30px;
-  color: #666;
+  color: #333;
+  display: flex;
+  gap: 3px;
 }
 
 /*******************************
@@ -24,7 +26,7 @@
 }
 
 .title {
-  font-size: 45px;
+  font-size: 40px;
 }
 
 .action {
@@ -41,6 +43,20 @@
   cursor: pointer;
 }
 
+.storeStats {
+  font-size: 15px;
+  color: #7e7e7e;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.storeMeta {
+  display: flex;
+  align-items: center;
+}
+
 .imageSliderWrapper {
   width: 90%;
   margin: 0 auto;
@@ -49,8 +65,9 @@
 
 .imageSliderWrapper img {
   margin: 0 auto;
-  width: auto;
+  width: 350px;
   height: 250px;
+  object-fit: cover;
 }
 
 :global(.slick-prev:before),
@@ -59,23 +76,35 @@
 }
 
 /*******************************
-*  Description Container
+*  Info Container
 ********************************/
-.descriptionWrapper {
+.infoWrapper {
   text-align: left;
   line-height: 2;
   word-break: break-word;
-  font-size: 16px;
-  color: #333;
-  margin-bottom: 20px;
-  margin-left: auto;
-  margin-right: auto;
+  padding: 0 70px;
   overflow: hidden;
+}
+
+.info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.infoTitle {
+  font-size: 18px;
+  width: 90px;
+  color: #666;
+}
+
+.infoContent {
+  font-size: 15px;
 }
 
 .description {
   margin-top: 40px;
-  line-height: 1.5;
+  line-height: 1.7;
 }
 
 /*******************************

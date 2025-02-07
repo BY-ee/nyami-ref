@@ -14,7 +14,7 @@ spring:
     properties:
       hibernate:
         format_sql: "true" # 출력되는 SQL 포맷팅 활성화
-#    show-sql: "true" # 실행된 SQL 쿼리 로깅 활성화
+    show-sql: "true" # 실행된 SQL 쿼리 로깅 활성화
 
   # 데이터 소스 및 HikariCP(DB 연결 풀) 설정
   datasource:
@@ -35,9 +35,9 @@ server:
 
 # 로그 설정
 logging:
-#  level:
-#    org.hibernate.SQL: DEBUG # SQL 쿼리 바인딩 값 확인
-#    org.hibernate.type.descriptor.sql: TRACE # SQL 쿼리 바인딩 값 확인
+  level:
+    org.hibernate.SQL: DEBUG # SQL 쿼리 바인딩 값 확인
+    org.hibernate.type.descriptor.sql: TRACE # SQL 쿼리 바인딩 값 확인
 #    com:
 #      project: DEBUG # 프로젝트 로깅 레벨 (디버깅 필요 시 주석 해제)
 #    org:

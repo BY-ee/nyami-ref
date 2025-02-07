@@ -35,8 +35,9 @@ const StoreList = ({ local, foodCategory, theme, sort }) => {
   const url = queryString ? `&${queryString}` : '';
 
   // 가게 리스트 fetch
-  const { data, error, loading } = useFetch(`/api/stores?page=${page}${url}`);
-  console.warn('로딩 상태: ', loading);
+  const { data, error, loading, refetch } = useFetch(
+    `/api/stores?page=${page}${url}`
+  );
   useEffect(() => {
     if (loading || !data) return;
     setStoreList((prevStores) => {
@@ -55,9 +56,8 @@ const StoreList = ({ local, foodCategory, theme, sort }) => {
     }
   }, [data, page, loading]);
 
-  // 가게 추가로드 함수 (loadMoreStores)의 최신 버전 저장
+  // 가게 추가로드 함수의 최신 버전 저장
   const loadMoreStoresRef = useRef(loadMoreStores);
-
   useEffect(() => {
     loadMoreStoresRef.current = loadMoreStores;
   }, [loadMoreStores]);
@@ -91,10 +91,7 @@ const StoreList = ({ local, foodCategory, theme, sort }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  if (error)
-    return (
-      <ErrorContainer error={error} onRetry={() => window.location.reload()} />
-    );
+  if (error) return <ErrorContainer error={error} onRetry={refetch} />;
   if (!loading && storeList.length === 0)
     return <ErrorContainer error="등록된 가게가 존재하지 않습니다." />;
 

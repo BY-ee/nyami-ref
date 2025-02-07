@@ -34,7 +34,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("http://localhost:3000")); // url 허용
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE")); // http 메서드 허용
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH")); // http 메서드 허용
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept")); // 요청 헤더 허용
         configuration.setExposedHeaders(List.of("Authorization")); // jwt 헤더 허용
         configuration.setAllowCredentials(true); // 인증 정보 포함 허용
