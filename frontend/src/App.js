@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom';
+import ScrollManager from './components/utils/ScrollManager';
 
 import Home from './pages/Home';
 import Header from './components/layout/Header';
@@ -55,6 +56,7 @@ const MinimalLayout = () => (
 function App() {
   return (
     <BrowserRouter>
+      <ScrollManager />
       <Routes>
         {/* Header, Footer가 포함되는 컴포넌트 */}
         <Route element={<DefaultLayout />}>
