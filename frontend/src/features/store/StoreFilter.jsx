@@ -103,6 +103,7 @@ const StoreFilter = ({
           value={sort}
           onChange={onSortChange}
           placeholder="정렬"
+          customStyles={{ width: '90px' }}
         />
       </div>
       <TagContainer

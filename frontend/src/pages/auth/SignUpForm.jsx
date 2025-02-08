@@ -13,62 +13,42 @@ const SignUpForm = () => {
   };
 
   return (
-    <Container>
-      <a>
-        <Link to="/">
-          <img
-            src={images.nyaminyami}
-            alt="냐미냐미 로고, 홈으로 돌아가기"
-            className={styles.logo}
-          />
-        </Link>
-      </a>
+    <Container height="600px">
+      <Link to="/">
+        <img
+          src={images.nyaminyami}
+          alt="냐미냐미 로고, 홈으로 돌아가기"
+          className={styles.logo}
+        />
+      </Link>
 
+      <h1 className={styles.intro}>
+        회원가입을 위해 빈칸을 모두 작성해주세요.
+      </h1>
       <form>
         <div className={styles.signupContainer}>
-          <h1 className={styles.intro}>
-            회원가입을 위해 빈칸을 모두 작성해주세요.
-          </h1>
-          <InputField
-            type="text"
-            name="username"
-            customStyles={{ width: '8rem' }}
-            placeholder="아이디"
-          />
-          <InputField
-            type="text"
-            name="nickname"
-            customStyles={{ width: '8rem' }}
-            placeholder="닉네임"
-          />
-          <InputField
-            type="password"
-            name="password"
-            customStyles={{ width: '10rem' }}
-            placeholder="비밀번호"
-          />
+          <InputField type="text" name="username" placeholder="아이디" />
+          <InputField type="text" name="nickname" placeholder="닉네임" />
+          <InputField type="password" name="password" placeholder="비밀번호" />
           <InputField
             type="password"
             name="confirmPassword"
-            customStyles={{ width: '10rem' }}
             placeholder="비밀번호 확인"
           />
           <EmailInputField onEmailChange={handleEmailChange} />
           <Button
             type="submit"
             disabled={false}
-            customStyles={{
-              width: '14.5rem',
-              height: '1.5rem',
-              fontSize: '0.6em',
-            }}
+            customStyles={{ marginTop: '30px' }}
           >
             회원가입
           </Button>
         </div>
       </form>
       <div className={styles.guide}>
-        <Link to="/login">로그인 화면으로 돌아가기</Link>
+        <Link to="/login" className={styles.guideLink}>
+          로그인 화면으로 돌아가기
+        </Link>
       </div>
     </Container>
   );

@@ -30,7 +30,7 @@ const LoginForm = () => {
             type="password"
             name="password"
             placeholder="비밀번호"
-            customStyles={{ 'margin-bottom': '30px' }}
+            customStyles={{ marginBottom: '30px' }}
           />
           <Button
             type="submit"
