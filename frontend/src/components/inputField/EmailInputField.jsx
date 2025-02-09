@@ -3,6 +3,18 @@ import InputField from '../inputField/InputField';
 import styles from './EmailInputField.module.css';
 import Button from '../button/Button';
 import Select from '../select/Select';
+
+/**
+ * 인증할 이메일 입력 필드와 인증코드 필드를 렌더링하는 컴포넌트
+ * @param {string} inputVerifyCode - 입력한 인증번호
+ * @param {Function} onVerifyCodeChange - 인증번호 변경 함수
+ * @param {Function} onEmailChange - 최종 이메일 변경 함수
+ * @param {Function} onVerifyEmail - 이메일 인증처리 함수
+ * @param {Function} onVerifyCode - 인증코드 확인 함수
+ * @param {boolean} isEmailSent - 이메일 전송 여부
+ * @param {boolean} isExpired - 인증 만료 여부
+ * @param {boolean} isEmailVerified - 이메일 인증 여부
+ */
 const EmailInputField = ({
   inputVerifyCode,
   onVerifyCodeChange,
