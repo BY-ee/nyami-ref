@@ -23,7 +23,24 @@ a {
   text-decoration: none;
   transition: color 0.3s ease;
   cursor: pointer;
-  &:hover {
-    color: #696969;
-  }
+}
+
+a:hover {
+  color: #696969;
+}
+
+button:disabled {
+  background-color: #e0e0e0;
+  color: #6c757d;
+  cursor: default;
+}
+button:disabled:hover {
+  background-color: #e0e0e0;
+}
+
+input:disabled,
+textarea:disabled {
+  background-color: #f5f5f5;
+  color: #b0b0b0;
+  cursor: default;
 }

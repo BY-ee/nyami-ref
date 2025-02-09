@@ -1,4 +1,4 @@
-.emailContainer {
+.emailInputContainer {
   display: flex;
   justify-content: space-between;
 }
@@ -11,4 +11,9 @@
 
 .at {
   color: #7a7777;
+}
+
+.emailVerifyContainer {
+  display: flex;
+  justify-content: space-between;
 }

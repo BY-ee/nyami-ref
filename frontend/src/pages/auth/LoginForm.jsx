@@ -25,11 +25,17 @@ const LoginForm = () => {
       </Link>
       <form>
         <div className={styles.inputContainer}>
-          <InputField type="text" name="id" placeholder="아이디" />
+          <InputField
+            type="text"
+            name="id"
+            placeholder="아이디"
+            autoComplete="username"
+          />
           <InputField
             type="password"
             name="password"
             placeholder="비밀번호"
+            autoComplete="current-password"
             customStyles={{ marginBottom: '30px' }}
           />
           <Button
