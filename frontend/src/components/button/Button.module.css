@@ -4,23 +4,13 @@
   border-radius: 4px;
   cursor: pointer;
   background-color: #ffd6dc;
-  padding: 0.5rem 1rem;
+  padding: 7px 15px;
+  font-size: 13px;
   color: #626262;
   transition: background-color 0.3s ease;
   white-space: nowrap; /* 텍스트 줄바꿈 방지 */
-  /* 버튼 글자 정렬*/
-  display: flex; /* Flexbox 사용 */
-  justify-content: center; /* 가로 중앙 정렬 */
-  align-items: center; /* 세로 중앙 정렬 */
 }
 
 .btn:hover {
   background-color: #ffcece;
-}
-
-/* 비활성화 */
-.disabled {
-  background-color: #e0e0e0;
-  color: #6c757d;
-  cursor: default;
 }

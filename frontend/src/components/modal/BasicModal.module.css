@@ -1,36 +1,16 @@
-.Modalcontainer {
-  width: 20rem;
-  height: 10rem;
+.modalContainer {
+  position: fixed;
+  padding: 30px;
   background-color: #fff;
   border: 1px solid #b5b3b3;
-  border-radius: 0.5rem;
+  border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  cursor: default;
-  position: fixed;
-  top: 50%; /* 화면의 수직 중앙 */
-  left: 50%; /* 화면의 가로 중앙 */
-  transform: translate(-50%, -150%); /* 자신의 크기만큼 중앙으로 이동 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.ButtonContainer {
-  position: absolute; /* 부모인 Modalcontainer 기준으로 배치 */
-  top: 80%;
-  left: 50%; /* 부모의 가로 중심 기준 */
-  transform: translateX(-50%); /* 자신의 가로 길이의 절반만큼 왼쪽으로 이동 */
-}
-.content {
-  width: 18rem;
-  height: 8rem;
-  position: absolute;
-
-  left: 50%; /* 부모의 가로 중심 기준 */
-  transform: translateX(-50%); /* 자신의 가로 길이의 절반만큼 왼쪽으로 이동 */
-  display: flex; /* 플렉스 박스 활성화 */
-  flex-direction: column; /* 자식 요소를 세로로 나열 */
-  justify-content: center; /* 수직 중앙 정렬 */
-  align-items: center; /* 가로 중앙 정렬 */
-  text-align: center; /* 텍스트 콘텐츠 중앙 정렬 */
-}
-.content > * {
-  margin-bottom: 0.5rem;
+.buttonContainer {
+  display: flex;
+  justify-content: center;
 }
