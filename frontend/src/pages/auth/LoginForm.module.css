@@ -44,18 +44,13 @@
   gap: 10px;
 }
 
-.joinLink {
+.link {
   color: #706f6f;
 }
 
-.findInfoContainer {
+.findLinkContainer {
   display: flex; /* Flexbox 활성화 */
-  justify-content: center; /* 중앙 정렬 */
-  align-items: center; /* 세로 중앙 정렬 */
   gap: 20px; /* 간격 설정 */
-  margin-top: 20px;
+  margin-top: 30px;
   font-size: 14px;
-  color: #706f6f;
-  text-align: center;
-  cursor: pointer;
 }

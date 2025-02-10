@@ -9,11 +9,11 @@ import FindId from './FindId';
 import FindPwd from './FindPwd';
 const LoginForm = () => {
   const navigator = useNavigate();
-  const [isIdModalOpen, setIdModalOpen] = useState(false); // 아이디 찾기 모달 상태
-  const [isPwdModalOpen, setPwdModalOpen] = useState(false); // 비밀번호 찾기 모달 상태
+  const [isIdModalOpen, setIsIdModalOpen] = useState(false); // 아이디 찾기 모달 상태
+  const [isPwdModalOpen, setIsPwdModalOpen] = useState(false); // 비밀번호 찾기 모달 상태
 
-  const closeIdModal = () => setIdModalOpen(false); // 아이디 찾기 모달 닫기
-  const closePwdModal = () => setPwdModalOpen(false); // 비밀번호 찾기 모달 닫기
+  const closeIdModal = () => setIsIdModalOpen(false); // 아이디 찾기 모달 닫기
+  const closePwdModal = () => setIsPwdModalOpen(false); // 비밀번호 찾기 모달 닫기
   return (
     <Container>
       <Link to="/">
@@ -69,17 +69,36 @@ const LoginForm = () => {
       <div className={styles.joinWrapper}>
         <p>
           아직 회원이 아니신가요?
-          <Link to="/signup" className={styles.joinLink}>
+          <Link to="/signup" className={styles.link}>
             회원가입
           </Link>
         </p>
       </div>
-      <div className={styles.findInfoContainer}>
+      <div className={styles.findLinkContainer}>
         {/* 정보 찾기 Modal 컴포넌트*/}
-        <FindId isOpen={isIdModalOpen} onClose={closeIdModal} />
-
-        <FindPwd isOpen={isPwdModalOpen} onClose={closePwdModal} />
+        <Link
+          to="#"
+          className={styles.link}
+          onClick={(e) => {
+            e.preventDefault();
+            setIsIdModalOpen(true);
+          }}
+        >
+          아이디 찾기
+        </Link>
+        <Link
+          to="#"
+          className={styles.link}
+          onClick={(e) => {
+            e.preventDefault();
+            setIsPwdModalOpen(true);
+          }}
+        >
+          비밀번호 찾기
+        </Link>
       </div>
+      <FindId isOpen={isIdModalOpen} onClose={closeIdModal} />
+      <FindPwd isOpen={isPwdModalOpen} onClose={closePwdModal} />
     </Container>
   );
 };

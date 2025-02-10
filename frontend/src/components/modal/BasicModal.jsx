@@ -3,7 +3,7 @@ import styles from './BasicModal.module.css';
 import Button from '../button/Button';
 
 /**
- *
+ * 기본적인 모달 컴포넌트
  * @param {Function} isOpen - 모달 열기 함수
  * @param {Function} onClose - 모달 닫기 함수
  * @param {string} width - 모달 컨테이너의 가로 길이

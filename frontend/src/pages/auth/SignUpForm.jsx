@@ -17,17 +17,16 @@ const SignUpForm = () => {
   }); // 폼 데이터 저장객체
   const {
     email,
+    isEmailValid,
     isEmailSent,
     isEmailVerified,
-    inputVerifyCode,
+    isExpired,
     emailVerifyMessage,
     timeLimit,
-    isRunning,
-    isExpired,
-    handleEmailChange,
-    handleVerifyEmail,
+    handleEmailInput,
+    sendEmail,
     handleVerifyCode,
-    setInputVerifyCode,
+    resetState,
   } = useEmailVerification();
   const [errorMessage, setErrorMessage] = useState(''); // 유효성 검사 메시지
 
@@ -132,11 +131,9 @@ const SignUpForm = () => {
             customStyles={{ marginBottom: '10px' }}
           />
           <EmailInputField
-            inputVerifyCode={inputVerifyCode}
-            onVerifyCodeChange={setInputVerifyCode}
-            onEmailChange={handleEmailChange}
-            onVerifyEmail={handleVerifyEmail}
             onVerifyCode={handleVerifyCode}
+            onEmailChange={handleEmailInput}
+            onSendEmail={sendEmail}
             isEmailSent={isEmailSent}
             isExpired={isExpired}
             isEmailVerified={isEmailVerified}
@@ -149,7 +146,7 @@ const SignUpForm = () => {
                   ? emailVerifyMessage
                   : '인증 시간이 만료되었습니다. 다시 인증해주세요.'}
               </span>
-              {isRunning && !isEmailVerified && (
+              {!isEmailVerified && timeLimit > 0 && (
                 <span>
                   {Math.floor(timeLimit / 60)}:
                   {String(timeLimit % 60).padStart(2, '0')}

@@ -6,21 +6,20 @@ import Select from '../select/Select';
 
 /**
  * 인증할 이메일 입력 필드와 인증코드 필드를 렌더링하는 컴포넌트
- * @param {string} inputVerifyCode - 입력한 인증번호
- * @param {Function} onVerifyCodeChange - 인증번호 변경 함수
- * @param {Function} onEmailChange - 최종 이메일 변경 함수
- * @param {Function} onVerifyEmail - 이메일 인증처리 함수
- * @param {Function} onVerifyCode - 인증코드 확인 함수
+ * @param {string} verifyCode - 입력한 인증번호
+ * @param {Function} onVerifyCode - 입력한 인증번호로 인증을 처리하는 함수
+ * @param {Function} onEmailChange - 입력한 최종 이메일을 상위 컴포넌트로 보내는 함수
+ * @param {Function} onSendEmail - 이메일로 인증번호를 전송하는 함수
  * @param {boolean} isEmailSent - 이메일 전송 여부
  * @param {boolean} isExpired - 인증 만료 여부
  * @param {boolean} isEmailVerified - 이메일 인증 여부
  */
 const EmailInputField = ({
-  inputVerifyCode,
-  onVerifyCodeChange,
-  onEmailChange,
-  onVerifyEmail,
+  verificationCode,
+  onVerificationCode,
   onVerifyCode,
+  onEmailChange,
+  onSendEmail,
   isEmailSent,
   isExpired,
   isEmailVerified,
@@ -38,11 +37,6 @@ const EmailInputField = ({
     }
   }, [emailId, emailDomain]);
 
-  // 이메일 아이디 변경
-  const handleEmailIdChange = (e) => {
-    setEmailId(e.target.value);
-  };
-
   // 이메일 도메인 변경
   const handleEmailDomainChange = (value) => {
     if (value === '직접 입력') {
@@ -52,14 +46,6 @@ const EmailInputField = ({
       setIsCustomDomain(false);
       setEmailDomain(value); // 선택한 도메인 설정
     }
-  };
-
-  const handleCustomDomainChange = (e) => {
-    setEmailDomain(e.target.value);
-  };
-
-  const handleVerifyCodeChange = (e) => {
-    onVerifyCodeChange(e.target.value);
   };
 
   // 이메일 도메인 선택 옵션 (컴포넌트 내부 상수로 정의)
@@ -81,7 +67,7 @@ const EmailInputField = ({
             customStyles={{ width: '90px', height: '30px' }}
             disabled={isEmailVerified}
             value={emailId}
-            onChange={handleEmailIdChange}
+            onChange={(e) => setEmailId(e.target.value)}
           />
           <span className={styles.at}>@</span>
 
@@ -107,13 +93,13 @@ const EmailInputField = ({
               value={emailDomain}
               disabled={isEmailVerified}
               customStyles={{ width: '100px' }}
-              onChange={handleCustomDomainChange}
+              onChange={(e) => setEmailDomain(e.target.value)}
             />
           )}
         </div>
 
         <div className={styles.authButtonContainer}>
-          <Button onClick={onVerifyEmail} disabled={isEmailVerified}>
+          <Button onClick={onSendEmail} disabled={isEmailVerified}>
             인증
           </Button>
         </div>
@@ -123,12 +109,12 @@ const EmailInputField = ({
         <div className={styles.emailVerifyContainer}>
           <InputField
             type="text"
-            name="verifyNumber"
+            name="verifyCode"
             placeholder="인증코드 입력"
             disabled={isEmailVerified || isExpired}
             customStyles={{ width: '213px', height: '30px' }}
-            value={inputVerifyCode}
-            onChange={handleVerifyCodeChange}
+            value={verificationCode}
+            onChange={(e) => onVerificationCode(e.target.value)}
           />
 
           <div className={styles.authButtonContainer}>
