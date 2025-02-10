@@ -1,7 +1,7 @@
 package com.project.store.repository;
 
 import com.project.store.dto.MenuDto;
-import com.project.store.dto.StoreWithMenuDto;
+import com.project.store.dto.StoreWithMenuResponse;
 import com.project.store.entity.QMenu;
 import com.project.store.entity.QStore;
 import com.project.store.entity.Store;
@@ -55,7 +55,7 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
     }
 
     @Override
-    public Optional<StoreWithMenuDto> findStoreById(int id) {
+    public Optional<StoreWithMenuResponse> findStoreById(int id) {
         QStore store = QStore.store;
         QMenu menu = QMenu.menu;
 
@@ -70,13 +70,13 @@ public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
                 .fetch();
 
         // 중복된 가게를 제거하는 Map 객체
-        Map<Integer, StoreWithMenuDto> storeMap = new HashMap<>();
+        Map<Integer, StoreWithMenuResponse> storeMap = new HashMap<>();
 
         for (Tuple row : result) {
             int storeId = Optional.ofNullable(row.get(store.id)).orElse(0);
 
             // 기존 StoreWithMenuDto가 없으면 새로 생성
-            StoreWithMenuDto storeDto = storeMap.computeIfAbsent(storeId, idKey -> new StoreWithMenuDto(
+            StoreWithMenuResponse storeDto = storeMap.computeIfAbsent(storeId, idKey -> new StoreWithMenuResponse(
                     idKey,
                     row.get(store.local.local),
                     row.get(store.foodCategory.foodCategory),

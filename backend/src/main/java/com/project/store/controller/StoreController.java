@@ -2,7 +2,7 @@ package com.project.store.controller;
 
 import com.project.store.dto.StoreResponse;
 import com.project.store.dto.StoreSearchRequest;
-import com.project.store.dto.StoreWithMenuDto;
+import com.project.store.dto.StoreWithMenuResponse;
 import com.project.store.service.StoreService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -64,7 +64,7 @@ public class StoreController {
                     @ApiResponse(
                             responseCode = "200",
                             description = "가게 조회 성공",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = StoreWithMenuDto.class))
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = StoreWithMenuResponse.class))
                     ),
                     @ApiResponse(
                             responseCode = "400",
@@ -84,7 +84,7 @@ public class StoreController {
             }
     )
     @GetMapping("/stores/{storeId}")
-    public ResponseEntity<StoreWithMenuDto> getStore(@PathVariable int storeId) {
+    public ResponseEntity<StoreWithMenuResponse> getStore(@PathVariable int storeId) {
         if (storeId <= 0) {
             return ResponseEntity.badRequest().body(null);
         }

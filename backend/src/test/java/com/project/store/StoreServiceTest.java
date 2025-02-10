@@ -1,6 +1,6 @@
 package com.project.store;
 
-import com.project.store.dto.StoreWithMenuDto;
+import com.project.store.dto.StoreWithMenuResponse;
 import com.project.store.dto.StoreResponse;
 import com.project.store.dto.StoreSearchRequest;
 import com.project.store.entity.FoodCategory;
@@ -241,7 +241,7 @@ public class StoreServiceTest {
     @DisplayName("가게의 id로 특정 가게를 조회합니다.")
     void getStoreById() {
         // Given
-        StoreWithMenuDto storeDto = new StoreWithMenuDto();
+        StoreWithMenuResponse storeDto = new StoreWithMenuResponse();
         storeDto.setId(1);
         storeDto.setLocal("강남구");
         storeDto.setFoodCategory("한식");
@@ -250,7 +250,7 @@ public class StoreServiceTest {
         when(storeRepository.findStoreById(anyInt())).thenReturn(Optional.of(storeDto));
 
         // When
-        Optional<StoreWithMenuDto> result = storeService.findStoreById(1);
+        Optional<StoreWithMenuResponse> result = storeService.findStoreById(1);
 
         // Then
         assertTrue(result.isPresent());
@@ -266,7 +266,7 @@ public class StoreServiceTest {
         when(storeRepository.findStoreById(anyInt())).thenReturn(Optional.empty());
 
         // When
-        Optional<StoreWithMenuDto> result = storeService.findStoreById(0);
+        Optional<StoreWithMenuResponse> result = storeService.findStoreById(0);
 
         // Then
         assertTrue(result.isEmpty());

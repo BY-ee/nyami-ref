@@ -2,9 +2,11 @@ package com.project.store.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @Schema(description = "가게 검색 Dto")
 public class StoreSearchRequest {
     @Schema(example = "강남구")

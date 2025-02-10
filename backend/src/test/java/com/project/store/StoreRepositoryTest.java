@@ -1,7 +1,7 @@
 package com.project.store;
 
 import com.project.common.config.QuerydslConfig;
-import com.project.store.dto.StoreWithMenuDto;
+import com.project.store.dto.StoreWithMenuResponse;
 import com.project.store.entity.Store;
 import com.project.store.repository.StoreRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -125,7 +125,7 @@ public class StoreRepositoryTest {
     @DisplayName("가게의 id로 특정 가게를 데이터베이스에서 조회합니다.")
     void findStoreById() {
         // When
-        Optional<StoreWithMenuDto> store = storeRepository.findStoreById(5);
+        Optional<StoreWithMenuResponse> store = storeRepository.findStoreById(5);
 
         // Then
         assertTrue(store.isPresent());
@@ -137,7 +137,7 @@ public class StoreRepositoryTest {
     @DisplayName("잘못된 id를 전달한 경우에 가게를 데이터베이스에서 조회합니다.")
     void findStoreByWrongId() {
         // When
-        Optional<StoreWithMenuDto> store = storeRepository.findStoreById(0);
+        Optional<StoreWithMenuResponse> store = storeRepository.findStoreById(0);
 
         // Then
         assertTrue(store.isEmpty());

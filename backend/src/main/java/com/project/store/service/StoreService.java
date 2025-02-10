@@ -1,6 +1,6 @@
 package com.project.store.service;
 
-import com.project.store.dto.StoreWithMenuDto;
+import com.project.store.dto.StoreWithMenuResponse;
 import com.project.store.dto.StoreResponse;
 import com.project.store.dto.StoreSearchRequest;
 import com.project.store.entity.Store;
@@ -36,7 +36,7 @@ public class StoreService {
         return new PageImpl<>(responses, pageable, stores.getTotalElements());
     }
 
-    public Optional<StoreWithMenuDto> findStoreById(int storeId) {
+    public Optional<StoreWithMenuResponse> findStoreById(int storeId) {
         return storeRepository.findStoreById(storeId);
     }
 

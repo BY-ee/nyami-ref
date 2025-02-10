@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(description = "메뉴가 포함된 가게 Dto")
-public class StoreWithMenuDto {
+public class StoreWithMenuResponse {
     private int id;
 
     @Schema(example = "서초구")
@@ -57,5 +57,4 @@ public class StoreWithMenuDto {
                                                                                       "\"image\": \"/images/menu_1.png\"}")
     )
     private List<MenuDto> menus;
-
 }
