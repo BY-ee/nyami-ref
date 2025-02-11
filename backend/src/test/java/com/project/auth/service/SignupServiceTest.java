@@ -1,7 +1,6 @@
-package com.project.auth;
+package com.project.auth.service;
 
 import com.project.auth.dto.SignupRequest;
-import com.project.auth.service.AuthService;
 import com.project.user.entity.Users;
 import com.project.user.mapper.UserMapper;
 import com.project.user.repository.UserRepository;
@@ -17,12 +16,11 @@ import org.springframework.test.context.ActiveProfiles;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
-public class AuthServiceTest {
+public class SignupServiceTest {
     @InjectMocks
     private AuthService authService;
 
