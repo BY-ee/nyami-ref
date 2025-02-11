@@ -14,11 +14,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
@@ -36,15 +36,10 @@ public class AuthServiceTest {
     private UserMapper userMapper;
 
     @Test
-    @DisplayName("알맞은 정보를 입력한 후 회원가입을 요청하면 데이터베이스에 저장한다.")
+    @DisplayName("알맞은 정보를 입력하면 회원 정보를 저장한다.")
     void signup() {
-        // given
-        SignupRequest request = new SignupRequest();
-        request.setUsername("test");
-        request.setNickname("nick");
-        request.setPassword("password123!");
-        request.setConfirmPassword("password123!");
-        request.setEmail("test@test.com");
+        // Given
+        SignupRequest request = new SignupRequest("test", "nick", "password123!", "password123!", "test@test.com");
 
         Users user = new Users();
         user.setUsername("test");
@@ -52,19 +47,126 @@ public class AuthServiceTest {
         user.setPassword("encoded_password");
         user.setEmail("test@test.com");
 
-        when(passwordEncoder.encode(anyString())).thenReturn("encoded_password");
+        when(passwordEncoder.encode("password123!")).thenReturn("encoded_password");
         when(userMapper.toUser(request)).thenReturn(user);
         when(userRepository.save(any(Users.class))).thenReturn(user);
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
 
-        // when
+        // When
         authService.registerUser(request);
 
-        // then
-        Optional<Users> savedUser = userRepository.findById(1L);
-        assertTrue(savedUser.isPresent());
-        assertEquals("test", savedUser.get().getUsername());
-        assertEquals("test@test.com", savedUser.get().getEmail());
-        assertEquals("nick", savedUser.get().getNickname());
+        // Then
+        verify(passwordEncoder, times(1)).encode("password123!");
+        verify(userRepository, times(1)).save(any(Users.class));
+    }
+
+    @Test
+    @DisplayName("유저 아이디에 빈 값이 전달되면 예외를 발생시킨다.")
+    void signupWithoutUsername() {
+        // Given
+        SignupRequest request = new SignupRequest("", "nick", "password123!", "password123!", "test@test.com");
+
+        // When & Then
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> authService.registerUser(request));
+        assertEquals("아이디는 필수 입력값입니다.", exception.getMessage());
+        verify(userRepository, never()).save(any(Users.class));
+    }
+
+    @Test
+    @DisplayName("닉네임에 빈 값이 전달되면 예외를 발생시킨다.")
+    void signupWithoutNickname() {
+        // Given
+        SignupRequest request = new SignupRequest("test", "", "password123!", "password123!", "test@test.com");
+
+        // When & Then
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> authService.registerUser(request));
+        assertEquals("닉네임은 필수 입력값입니다.", exception.getMessage());
+        verify(userRepository, never()).save(any(Users.class));
+    }
+
+    @Test
+    @DisplayName("비밀번호에 빈 값이 전달되면 예외를 발생시킨다.")
+    void signupWithoutPassword() {
+        // Given
+        SignupRequest request = new SignupRequest("test", "nick", "", "password123!", "test@test.com");
+
+        // When & Then
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> authService.registerUser(request));
+        assertEquals("비밀번호는 필수 입력값입니다.", exception.getMessage());
+        verify(userRepository, never()).save(any(Users.class));
+    }
+
+    @Test
+    @DisplayName("비밀번호 확인에 빈 값이 전달되면 예외를 발생시킨다.")
+    void signupWithoutConfirmPassword() {
+        // Given
+        SignupRequest request = new SignupRequest("test", "nick", "password123!", "", "test@test.com");
+
+        // When & Then
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> authService.registerUser(request));
+        assertEquals("비밀번호 확인은 필수 입력값입니다.", exception.getMessage());
+        verify(userRepository, never()).save(any(Users.class));
+    }
+
+    @Test
+    @DisplayName("이메일에 빈 값이 전달되면 예외를 발생시킨다.")
+    void signupWithoutEmail() {
+        // Given
+        SignupRequest request = new SignupRequest("test", "nick", "password123!", "password123!", "");
+
+        // When & Then
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> authService.registerUser(request));
+        assertEquals("이메일은 필수 입력값입니다.", exception.getMessage());
+        verify(userRepository, never()).save(any(Users.class));
+    }
+
+    @Test
+    @DisplayName("비밀번호와 비밀번호 확인이 다르면 예외를 발생시킨다.")
+    void signupWithPasswordMismatch() {
+        // Given
+        SignupRequest request = new SignupRequest("test", "nick", "password123!", "pass", "test@test.com");
+
+        // When & Then
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> authService.registerUser(request));
+        assertEquals("비밀번호가 일치하지 않습니다.", exception.getMessage());
+        verify(userRepository, never()).save(any(Users.class));
+    }
+
+    @Test
+    @DisplayName("중복된 아이디로 가입을 시도하면 예외를 발생시킨다.")
+    void signupWithDuplicateUsername() {
+        // Given
+        SignupRequest request = new SignupRequest("test", "nick", "password123!", "password123!", "test@test.com");
+        when(userRepository.existsByUsername(request.getUsername())).thenReturn(true);
+
+        // When & Then
+        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> authService.registerUser(request));
+        assertEquals("중복된 아이디입니다.", exception.getMessage());
+        verify(userRepository, never()).save(any(Users.class));
+    }
+
+    @Test
+    @DisplayName("중복된 닉네임으로 가입을 시도하면 예외를 발생시킨다.")
+    void signupWithDuplicateNickname() {
+        // Given
+        SignupRequest request = new SignupRequest("test", "nick", "password123!", "password123!", "test@test.com");
+        when(userRepository.existsByNickname(request.getNickname())).thenReturn(true);
+
+        // When & Then
+        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> authService.registerUser(request));
+        assertEquals("중복된 닉네임입니다.", exception.getMessage());
+        verify(userRepository, never()).save(any(Users.class));
+    }
+
+    @Test
+    @DisplayName("중복된 이메일로 가입을 시도하면 예외를 발생시킨다.")
+    void signupWithDuplicateEmail() {
+        // Given
+        SignupRequest request = new SignupRequest("test", "nick", "password123!", "password123!", "test@test.com");
+        when(userRepository.existsByEmail(request.getEmail())).thenReturn(true);
+
+        // When & Then
+        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> authService.registerUser(request));
+        assertEquals("중복된 이메일입니다.", exception.getMessage());
+        verify(userRepository, never()).save(any(Users.class));
     }
 }
