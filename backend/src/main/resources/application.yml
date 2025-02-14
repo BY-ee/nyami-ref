@@ -46,3 +46,9 @@ logging:
 #        security: DEBUG # Spring Security 로깅 레벨  (디버깅 필요 시 주석 해제)
   file:
     name: ${LOG_PATH} # 로그 파일 저장 위치
+
+# JWT 설정
+service:
+  jwt:
+    secret-key: ${JWT_SECRET_KEY} # JWT 비밀 키
+    access-expiration: ${JWT_ACCESS_EXPIRATION} # JWT 만료 시간
