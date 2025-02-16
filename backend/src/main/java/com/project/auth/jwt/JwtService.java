@@ -1,6 +1,6 @@
 package com.project.auth.jwt;
 
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +26,7 @@ public class JwtService {
         this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
     }
 
+    // Spring 컨텍스트의 유저 데이터로 토큰을 생성하는 메서드
     public String generateAccessToken(UserDetails userDetails) {
         return Jwts.builder()
                 .subject(userDetails.getUsername()) // 사용자 식별자
@@ -36,8 +37,12 @@ public class JwtService {
                 .compact(); // JWT 문자열 반환
     }
 
-    public boolean validateToken(String token) {
-        return false;
+    // 토큰의 유효성을 검증하는 메서드
+    public void validateToken(String token) {
+        Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token);
     }
 
     public String extractUsername(String token) {
