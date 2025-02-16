@@ -45,7 +45,22 @@ public class JwtService {
                 .parseSignedClaims(token);
     }
 
+    // JWT에서 사용자명을 추출하는 메서드
     public String extractUsername(String token) {
-        return null;
+        return getPayload(token).getSubject();
+    }
+
+    // JWT에서 만료 시간을 추출하는 메서드
+    public Date extractExpirationDate(String token) {
+        return getPayload(token).getExpiration();
+    }
+
+    // JWT의 payload를 반환하는 메서드
+    private Claims getPayload(String token) {
+        return Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 }

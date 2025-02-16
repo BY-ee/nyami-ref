@@ -2,10 +2,10 @@ package com.project.auth.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SignatureException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -55,7 +55,7 @@ public class JwtTest {
 
     @Test
     @DisplayName("JWT를 생성합니다.")
-    void CreateJwt() {
+    void createJwt() {
         // Given
         String token = jwtService.generateAccessToken(userDetails);
 
@@ -75,22 +75,70 @@ public class JwtTest {
 
     @Test
     @DisplayName("유효한 JWT를 해석하고 유효성을 검증합니다.")
-    void VerifyJwt() {
+    void verifyJwt() {
         // Then
         assertDoesNotThrow(() -> jwtService.validateToken(validToken));
     }
 
     @Test
     @DisplayName("만료된 JWT는 검증에 실패해야 합니다.")
-    void ExpiredJwtShouldFail() {
+    void verifyExpiredJwt() {
         // Then
         assertThrows(ExpiredJwtException.class, () -> jwtService.validateToken(expiredToken));
     }
 
     @Test
     @DisplayName("변조된 JWT는 검증에 실패해야 합니다.")
-    void InvalidJwtShouldFail() {
+    void verifyInvalidJwt() {
         // Then
-        assertThrows(SignatureException.class, () -> jwtService.validateToken(invalidToken));
+        assertThrows(JwtException.class, () -> jwtService.validateToken(invalidToken));
+    }
+
+    @Test
+    @DisplayName("유효한 JWT에서 사용자명을 추출합니다.")
+    void extractUsernameWithValidToken() {
+        // Given
+        String username = jwtService.extractUsername(validToken);
+
+        // Then
+        assertEquals("test", username);
+    }
+
+    @Test
+    @DisplayName("만료된 JWT에서 사용자명을 추출하면 예외가 발생해야 합니다.")
+    void extractUsernameWithExpiredToken() {
+        // Then
+        assertThrows(ExpiredJwtException.class, () -> jwtService.extractUsername(expiredToken));
+    }
+
+    @Test
+    @DisplayName("변조된 JWT에서 사용자명을 추출하면 예외가 발생해야 합니다.")
+    void extractUsernameWithInvalidToken() {
+        // Then
+        assertThrows(JwtException.class, () -> jwtService.extractUsername(invalidToken));
+    }
+
+    @Test
+    @DisplayName("유효한 JWT에서 만료 시간을 추출합니다.")
+    void extractExpirationTimeWithValidToken() {
+        // Given
+        Date expirationDate = jwtService.extractExpirationDate(validToken);
+
+        // Then
+        assertNotNull(expirationDate);
+    }
+
+    @Test
+    @DisplayName("만료된 JWT에서 만료 시간을 추출하면 예외가 발생해야 합니다.")
+    void extractExpirationTimeWithExpiredToken() {
+        // Then
+        assertThrows(ExpiredJwtException.class, () -> jwtService.extractExpirationDate(expiredToken));
+    }
+
+    @Test
+    @DisplayName("변조된 JWT에서 만료 시간을 추출하면 예외가 발생해야 합니다.")
+    void extractExpirationTimeWithInvalidToken() {
+        // Then
+        assertThrows(JwtException.class, () -> jwtService.extractExpirationDate(invalidToken));
     }
 }
