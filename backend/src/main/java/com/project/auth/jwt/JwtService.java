@@ -4,6 +4,7 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -39,11 +40,16 @@ public class JwtService {
 
     // 토큰의 유효성을 검증하는 메서드
     public void validateToken(String token) {
-        Jwts.parser()
-                .verifyWith(secretKey)
-                .build()
-                .parseSignedClaims(token);
+        try {
+            Jwts.parser()
+                    .verifyWith(secretKey)
+                    .build()
+                    .parseSignedClaims(token);
+        } catch (JwtException e) {
+            throw new BadCredentialsException("토큰이 유효하지 않습니다:", e);
+        }
     }
+
 
     // JWT에서 사용자명을 추출하는 메서드
     public String extractUsername(String token) {

@@ -47,7 +47,7 @@ public class SecurityConfig {
                 )
                 .authenticationProvider(daoAuthenticationProvider) // 사용자 인증 처리 객체
                 .addFilterAt(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // 로그인 필터
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // JWT 검증 필터
+                .addFilterAfter(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // JWT 검증 필터
                 .build();
     }
 
@@ -92,7 +92,7 @@ public class SecurityConfig {
     // JWT 기반 인증 처리 객체 등록
     @Bean
     public AuthenticationProvider jwtAuthenticationProvider() {
-        return new JwtAuthenticationProvider(jwtService);
+        return new JwtAuthenticationProvider(jwtService, userDetailsService);
     }
 
     // 로그인 필터 등록
@@ -103,7 +103,7 @@ public class SecurityConfig {
 
     // JWT 검증 필터 등록
     @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter(CustomUserDetailsService userDetailsService) {
-        return new JwtAuthenticationFilter(jwtService, userDetailsService);
+    public JwtAuthenticationFilter jwtAuthenticationFilter(AuthenticationManager authenticationManager) {
+        return new JwtAuthenticationFilter(jwtService, authenticationManager);
     }
 }
