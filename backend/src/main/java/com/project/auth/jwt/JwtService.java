@@ -1,10 +1,12 @@
 package com.project.auth.jwt;
 
+import com.project.auth.dto.CustomUserDetails;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -28,12 +30,15 @@ public class JwtService {
     }
 
     // Spring 컨텍스트의 유저 데이터로 토큰을 생성하는 메서드
-    public String generateAccessToken(UserDetails userDetails) {
+    public String generateAccessToken(Authentication authentication) {
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+
         return Jwts.builder()
                 .subject(userDetails.getUsername()) // 사용자 식별자
                 .issuer(issuer) // JWT 발급자
                 .issuedAt(new Date()) // JWT 발급 시간
                 .expiration(new Date(System.currentTimeMillis() + expirationTime)) // JWT 만료 시간
+                .claim("id", userDetails.getId()) // 사용자 ID
                 .signWith(secretKey) // JWT 서명 적용
                 .compact(); // JWT 문자열 반환
     }

@@ -46,7 +46,7 @@ public class SecurityConfig {
                         .anyRequest().permitAll()
                 )
                 .authenticationProvider(daoAuthenticationProvider) // 사용자 인증 처리 객체
-                .addFilterAt(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // 로그인 필터
+                .addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // 로그인 필터
                 .addFilterAfter(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // JWT 검증 필터
                 .build();
     }

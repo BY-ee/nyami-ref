@@ -1,5 +1,7 @@
 package com.project.auth.jwt;
 
+import com.project.auth.dto.CustomUserDetails;
+import com.project.common.exception.InvalidJwtException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
@@ -9,12 +11,15 @@ import io.jsonwebtoken.security.Keys;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.crypto.SecretKey;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,7 +29,8 @@ public class JwtTest {
     private String validToken; // 유효한 토큰
     private String expiredToken; // 만료된 토큰
     private String invalidToken; // 변조된 토큰
-    private UserDetails userDetails; // 유저 데이터
+    private Authentication authentication; // 인증 정보 관리 객체
+    private UserDetails userDetails; // 인증 유저 데이터
     private String issuer; // 토큰 발급자
     private SecretKey secretKey; // 비밀 키
 
@@ -35,12 +41,10 @@ public class JwtTest {
         secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(encodedKey));
 
         jwtService = new JwtService(issuer, 3600000L, encodedKey);
-        userDetails = User.withUsername("test")
-                .password("password123!")
-                .roles("USER")
-                .build();
+        userDetails = new CustomUserDetails(1,"test","password123!", List.of(new SimpleGrantedAuthority("ROLE_USER")));
 
-        validToken = jwtService.generateAccessToken(userDetails);
+        authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        validToken = jwtService.generateAccessToken(authentication);
         expiredToken = Jwts.builder()
                 .subject(userDetails.getUsername())
                 .issuer(issuer)
@@ -57,7 +61,7 @@ public class JwtTest {
     @DisplayName("JWT를 생성합니다.")
     void createJwt() {
         // Given
-        String token = jwtService.generateAccessToken(userDetails);
+        String token = jwtService.generateAccessToken(authentication);
 
         // When
         Claims claims = Jwts.parser()
@@ -84,14 +88,14 @@ public class JwtTest {
     @DisplayName("만료된 JWT는 검증에 실패해야 합니다.")
     void verifyExpiredJwt() {
         // Then
-        assertThrows(ExpiredJwtException.class, () -> jwtService.validateToken(expiredToken));
+        assertThrows(InvalidJwtException.class, () -> jwtService.validateToken(expiredToken));
     }
 
     @Test
     @DisplayName("변조된 JWT는 검증에 실패해야 합니다.")
     void verifyInvalidJwt() {
         // Then
-        assertThrows(JwtException.class, () -> jwtService.validateToken(invalidToken));
+        assertThrows(InvalidJwtException.class, () -> jwtService.validateToken(invalidToken));
     }
 
     @Test

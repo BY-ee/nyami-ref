@@ -28,6 +28,7 @@ backend/.gradle/
 backend/build/
 backend/application-secret.properties
 backend/application.secret.yml
+backend/application.log*
 
 # IDE 및 빌드 관련 파일
 backend/.classpath

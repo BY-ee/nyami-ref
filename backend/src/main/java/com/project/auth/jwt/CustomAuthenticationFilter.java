@@ -1,6 +1,7 @@
 package com.project.auth.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.auth.dto.CustomUserDetails;
 import com.project.auth.dto.LoginRequest;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -10,12 +11,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
@@ -46,8 +48,10 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         // 사용자 정보 추출
-        UserDetails userDetails = (UserDetails) authResult.getPrincipal();
-        String token = jwtService.generateAccessToken(userDetails);
+        CustomUserDetails userDetails = (CustomUserDetails) authResult.getPrincipal();
+        
+        // JWT 생성
+        String token = jwtService.generateAccessToken(authResult);
 
         // 응답 헤더 설정
         response.setHeader("Authorization", "Bearer " + token);
@@ -58,7 +62,9 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         Map<String, Object> responseBody = new HashMap<>();
         responseBody.put("token", token);
         responseBody.put("username", userDetails.getUsername());
-        responseBody.put("roles", userDetails.getAuthorities());
+        responseBody.put("roles", userDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList()));
 
         response.getWriter().write(new ObjectMapper().writeValueAsString(responseBody));
     }
