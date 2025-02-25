@@ -1,5 +1,6 @@
 package com.project.common.config;
 
+import com.project.common.exception.InvalidJwtException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
+    /** InvalidJwtException 예외 처리 */
+    @ExceptionHandler(InvalidJwtException.class)
+    public ResponseEntity<String> handleInvalidJwt(InvalidJwtException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+    }
+
     /** ExpiredJwtException 예외 처리 */
     @ExceptionHandler(ExpiredJwtException.class)
     public ResponseEntity<String> handleExpiredJwtException(ExpiredJwtException e) {
@@ -33,7 +40,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body("입력값이 잘못되었습니다.");
     }
 
-    /** IllegalArgumentException 예외 처리 */
+    /** IllegalStateException 예외 처리 */
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<String> handleIllegalStateException(IllegalStateException e) {
         log.warn("IllegalState 예외가 발생하였습니다: {}", e.getMessage(), e);

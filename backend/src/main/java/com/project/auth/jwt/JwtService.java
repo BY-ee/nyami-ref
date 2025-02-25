@@ -1,9 +1,11 @@
 package com.project.auth.jwt;
 
 import com.project.auth.dto.CustomUserDetails;
+import com.project.common.exception.InvalidJwtException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SecurityException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
@@ -50,8 +52,14 @@ public class JwtService {
                     .verifyWith(secretKey)
                     .build()
                     .parseSignedClaims(token);
+        } catch (ExpiredJwtException e) {
+            throw new InvalidJwtException("JWT 토큰이 만료되었습니다.", e);
+        } catch (MalformedJwtException e) {
+            throw new InvalidJwtException("JWT 토큰이 변조되었습니다.", e);
+        } catch (SecurityException e) {
+            throw new InvalidJwtException("JWT 서명이 유효하지 않습니다.", e);
         } catch (JwtException e) {
-            throw new BadCredentialsException("토큰이 유효하지 않습니다:", e);
+            throw new InvalidJwtException("JWT 토큰이 유효하지 않습니다.", e); // 이외의 예외
         }
     }
 
