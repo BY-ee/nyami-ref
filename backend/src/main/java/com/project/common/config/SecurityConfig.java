@@ -10,8 +10,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -74,10 +74,8 @@ public class SecurityConfig {
 
     // 인증 관리 객체 등록
     @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationProvider daoAuthenticationProvider,
-            AuthenticationProvider jwtAuthenticationProvider) {
-        return new ProviderManager(List.of(daoAuthenticationProvider, jwtAuthenticationProvider));
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
     // 로그인 처리 객체 등록
@@ -98,7 +96,9 @@ public class SecurityConfig {
     // 로그인 필터 등록
     @Bean
     public CustomAuthenticationFilter customAuthenticationFilter(AuthenticationManager authenticationManager) {
-        return new CustomAuthenticationFilter(authenticationManager, jwtService);
+        CustomAuthenticationFilter filter = new CustomAuthenticationFilter(jwtService);
+        filter.setAuthenticationManager(authenticationManager);
+        return filter;
     }
 
     // JWT 검증 필터 등록

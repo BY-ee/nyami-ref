@@ -20,11 +20,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
-    private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
 
-    public CustomAuthenticationFilter(AuthenticationManager authenticationManager, JwtService jwtService) {
-        this.authenticationManager = authenticationManager;
+    public CustomAuthenticationFilter(JwtService jwtService) {
         this.jwtService = jwtService;
         setFilterProcessesUrl("/api/auth/login");
     }
@@ -34,7 +32,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         try {
             LoginRequest loginRequest = new ObjectMapper().readValue(request.getInputStream(), LoginRequest.class);
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword());
-            return authenticationManager.authenticate(authenticationToken);
+            return getAuthenticationManager().authenticate(authenticationToken);
         } catch (IOException e) {
             try {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "유효하지 않은 요청입니다.");
