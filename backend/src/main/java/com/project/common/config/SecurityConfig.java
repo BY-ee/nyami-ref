@@ -15,6 +15,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -39,12 +40,15 @@ public class SecurityConfig {
                                                    AuthenticationProvider daoAuthenticationProvider) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable) // REST api에서는 csrf 보호 불필요
+                .sessionManagement(sessionManagementConfigurer -> sessionManagementConfigurer
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                ) // 세션 무효화 (stateless)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // cors 설정 적용
-                .authorizeHttpRequests(auth -> auth // 권한별 요청의 응답 제어 (인가)
+                .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/api/auth/login").permitAll()
                         .anyRequest().permitAll()
-                )
+                ) // 권한별 요청의 응답 제어 (인가)
                 .authenticationProvider(daoAuthenticationProvider) // 사용자 인증 처리 객체
                 .addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // 로그인 필터
                 .addFilterAfter(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // JWT 검증 필터

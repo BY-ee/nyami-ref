@@ -1,6 +1,8 @@
 package com.project.auth.controller;
 
+import com.project.auth.dto.LoginRequest;
 import com.project.auth.dto.SignupRequest;
+import com.project.auth.jwt.JwtService;
 import com.project.auth.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -12,6 +14,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,6 +31,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "인증 API", description = "인증 관련 API 명세서")
 public class AuthController {
     private final AuthService authService;
+    private final JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
 
     @Operation(
             summary = "회원가입",
@@ -57,5 +64,39 @@ public class AuthController {
     public ResponseEntity<String> signup(@Valid @RequestBody SignupRequest signupRequest) {
         authService.registerUser(signupRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body("회원가입이 완료되었습니다.");
+    }
+
+    @Operation(
+            summary = "로그인",
+            description = "가입된 회원 정보를 입력하여 인증합니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "로그인 성공"
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "잘못된 요청 (입력값 검증 실패)",
+                            content = @Content(mediaType = "application/json", schema = @Schema(type = "string", example = "아이디는 필수 입력값입니다."))
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "유효하지 않은 JWT 사용",
+                            content = @Content(mediaType = "application/json", schema = @Schema(type = "string", example = "JWT 토큰이 만료되었습니다."))
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "서버 오류",
+                            content = @Content(mediaType = "application/json", schema = @Schema(type = "string", example = "서버 내부 오류가 발생했습니다."))
+                    )
+            }
+    )
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@Valid @RequestBody LoginRequest loginRequest) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+
+        String token = jwtService.generateAccessToken(authentication);
+        return ResponseEntity.ok(token);
     }
 }

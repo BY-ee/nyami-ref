@@ -83,3 +83,10 @@ INSERT INTO menu (store_id, name, price, description, image) VALUES
 (10, '스테이크', 25000, '최상급 등심을 사용한 육즙 가득한 스테이크', '/images/menu/10/store_10_menu_2.jpg'),
 (10, '초밥', 18000, '신선한 해산물과 정갈한 밥으로 만든 초밥 세트', '/images/menu/10/store_10_menu_3.jpg'),
 (10, '라면', 8000, '진한 육수와 쫄깃한 면발의 일본식 라면', '/images/menu/10/store_10_menu_4.jpg');
+
+INSERT INTO users (username, password, naver_id, google_id, kakao_id, email, nickname, profile_image, introduction) VALUES
+('test', 'password123!', NULL, NULL, NULL, 'test@example.com', 'nickname1', 'https://example.com/profile1.jpg', 'sns 연동 데이터가 없는 유저'),
+('test2', 'password123!', 'test2_naver', NULL, NULL, 'test2@example.com', 'nickname2', 'https://example.com/profile2.jpg', '네이버 연동만 되어 있는 유저'),
+('test3', 'password123!', NULL, 'test3_google', NULL, 'test3@example.com', 'nickname3', 'https://example.com/profile3.jpg', '구글 연동만 되어 있는 유저'),
+('test4', 'password123!', NULL, NULL, 'test4_kakao', 'test4@example.com', 'nickname4', 'https://example.com/profile4.jpg', '카카오 연동만 되어 있는 유저'),
+('test5', 'password123!', 'test5_naver', 'test5_google', 'test5_kakao', 'test5@example.com', 'nickname5', 'https://example.com/profile5.jpg', '모든 플랫폼에 연동되어 있는 유저');
